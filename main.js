@@ -20,12 +20,11 @@ for (let i = 0; i < studentNames.length; i++) {
   console.log(`${i} ${studentNames[i]}`);
 }
 
-for (student in topStudents){
-    console.log(`Top Student: ${topStudents[student]}`);
-}
+topStudents.forEach((student) => {
+    console.log(`Top Student: ${student}`);
+});
 
-let studentNameLengths = [];
-studentNames.forEach(name => studentNameLengths.push(name.length));
+let studentNameLengths = studentNames.map((name) => name.length);
 console.log("2.3 Name lengths computed:");
 console.log(studentNameLengths);
 
@@ -38,8 +37,9 @@ function Course(courseName, instructor, studentNames) {
     this.assignments = [];
 
     this.addSeed = () => {
-        let newSeed = prompt("Enter a student name to seed the roster (optional):").trim();
-        if (!newSeed) {
+        let newSeed = prompt("Enter a student name to seed the roster (optional):");
+        newSeed = newSeed ? newSeed.trim() : "";
+        if (!newSeed || newSeed.length === 0) {
             return this.internalStudentPool[Math.floor(Math.random() * this.internalStudentPool.length)];
         } else{
             return newSeed;
@@ -50,7 +50,8 @@ function Course(courseName, instructor, studentNames) {
     console.log("3.1 Course object ready");
 
     this.addStudent = () => {
-        let newStudent = prompt("Enter a student name to add:").trim();
+        let newStudent = prompt("Enter a student name to add:");
+        newStudent = newStudent ? newStudent.trim() : "";
         if (newStudent) {
             this.students.push(newStudent);
             console.log(`3.2 Added student: ${newStudent}`);
@@ -64,7 +65,8 @@ function Course(courseName, instructor, studentNames) {
     }
 
     this.removeStudent = () => {
-        let studentToRemove = prompt(`Enter a student name to remove (options: ${this.students.join(", ")}):`).trim();
+        let studentToRemove = prompt(`Enter a student name to remove (options: ${this.students.join(", ")}):`);
+        studentToRemove = studentToRemove ? studentToRemove.trim() : "";
         if (!studentToRemove) {
             return false;
         }
