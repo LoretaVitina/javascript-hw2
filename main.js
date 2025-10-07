@@ -6,10 +6,10 @@ studentNames.unshift("Fernando");
 studentNames.push("Alise");
 console.log("1.2 Late registrations processed");
 
-let withdrawnStudent = studentNames.splice(9,1);
-console.log(`1.3 Withdrawal processed: ${withdrawnStudent[0]}`);
+const withdrawnStudent = studentNames.splice(9,1);
+console.log(`1.3 Withdrawal processed: ${withdrawnStudent}`);
 
-let topStudents = studentNames.slice(0,3);
+const topStudents = studentNames.slice(0,3);
 console.log("1.4 Priority students identified");
 
 studentNames.sort((a, b) => a.localeCompare(b, "lv"));
@@ -27,7 +27,7 @@ for (student in topStudents){
 let studentNameLengths = [];
 studentNames.forEach(name => studentNameLengths.push(name.length));
 console.log("2.3 Name lengths computed:");
-console.log(`${studentNameLengths}`);
+console.log(studentNameLengths);
 
 // working with objects
 function Course(courseName, instructor, studentNames) {
@@ -84,9 +84,13 @@ function Course(courseName, instructor, studentNames) {
         });
     }
 
-    this.addAssignment = (title, dueDate, maxScore) => {
-        this.assignments.push({ title, dueDate, maxScore });
-        console.log(`3.4 Added assignment: ${title}`);
+    this.addAssignment = (assignment) => {
+        const isValidTitle = assignment && typeof assignment.title === "string" && assignment.title.trim().length > 0;
+        const isValidDue = assignment && typeof assignment.dueDate === "string" && assignment.dueDate.trim().length > 0;
+        const isValidMax = assignment && typeof assignment.maxScore === "number" && Number.isFinite(assignment.maxScore);
+        if (!isValidTitle || !isValidDue || !isValidMax) return;
+        this.assignments.push({ title: assignment.title.trim(), dueDate: assignment.dueDate.trim(), maxScore: assignment.maxScore });
+        console.log(`4.2 Added assignment: ${assignment.title.trim()}`);
     }
 
     this.listAssignments = () => {
@@ -109,10 +113,20 @@ programming.assignments = [
     { title: "Assignment 3", dueDate: "December 30, 2025, 11:59 PM", maxScore: 100 }
 ];
 console.log("4.1 Assignments initialized");
-programming.addAssignment("Final Project", "January 20, 2026, 11:59 PM", 200);
+programming.addAssignment({ title: "Final Project", dueDate: "January 20, 2026, 11:59 PM", maxScore: 200 });
 programming.listAssignments();
 
-Array.prototype.median = function() {
-    if (this.length === 0) return null;
-    if (this.some(isNaN)) return null;
-};
+Object.defineProperty(Array.prototype, "median", {
+    enumerable: false,
+    configurable: true,
+    writable: true,
+    value: function () {
+        if (this.length === 0) return null;
+        if (!this.every(v => typeof v === "number" && Number.isFinite(v))) return null;
+        const sorted = [...this].sort((a, b) => a - b);
+        const mid = Math.floor(sorted.length / 2);
+        return sorted.length % 2 === 1
+            ? sorted[mid]
+            : (sorted[mid - 1] + sorted[mid]) / 2;
+    }
+});
